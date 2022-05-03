@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Validate me</title>
+  </head>
+  <body>
+    At lease one piece of data has to come in from every input type.
+    <form action="form.html" method="get">
+      <br />
+      Name:<input
+        type="text"
+        name="fullname"
+        placeholder="Enter Full Name"
+      /><br />
+      Gender:<br />
+      Male<input type="radio" name="gender" value="male" />Female<input
+        type="radio"
+        name="gender"
+        value="female"
+      /><br />
+      Hobbies<br />
+      Baseball
+      <input type="checkbox" name="hobbies" value="baseball" /> Football
+      <input type="checkbox" name="hobbies" value="football" /> Hockey
+      <input type="checkbox" name="hobbies" value="hockey" /><br />
+      Favorite Show
+      <select name="show">
+        <option value="">Choose Below</option>
+        <option value="ATHF">Aqua Teen Hunger Force</option>
+        <option value="Family Guy">Family Guy</option>
+        <option value="Simpsons">Simpsons</option></select
+      ><br />
+      Comments<br />
+      <textarea cols="50" rows="6" name="comments">Enter Comments</textarea
+      ><br />
+      <input type="submit" name="submit" value="enter me" />
+    </form>
+
+    <script>
+      //function to process entries
+
+      const processEntries = (e) => {
+        // function for inserting new html element into existing form element
+        function insertAfter(newNode, existingNode) {
+          existingNode.parentNode.insertBefore(
+            newNode,
+            existingNode.nextSibling
+          );
+        }
+        // new html element that will be inserted
+        const p = document.createElement("p");
+        p.style.color = "red";
+
+        for (let i = 0; i <= document.forms[0].length; i++) {
+          // validate full name field
+          if (document.forms[0].elements[i].type == "text") {
+            if (document.forms[0].elements[i].value == "") {
+              // avoid form clearing completely if only one validation fails
+              e.preventDefault();
+              // creating a new element to notify user of failed
+              p.innerHTML = "* This field is required";
+              insertAfter(p, document.forms[0].elements[i]);
+              document.forms[0].elements[i].focus();
+              break;
+            }
+          }
+          // validate Gender radio button
+          let radioGrp = false;
+
+          if (document.forms[0].elements[i].type == "radio") {
+            let msg = document.forms[0].elements[i].name;
+            const numbOfElems = document.getElementsByName(msg).length;
+            let currentElement = document.getElementsByName(msg);
+            for (let j = 0; j < numbOfElems; j++) {
+              if (currentElement[j].checked == true) {
+                radioGrp = true;
+              }
+            }
+            if (radioGrp == false) {
+              e.preventDefault();
+              p.innerHTML =
+                "* Please choose a " + document.forms[0].elements[i].name;
+              insertAfter(p, document.forms[0].elements[i + 1]);
+              break;
+            }
+          }
+
+          //validate hobbies checkbox
+          let checkBoxHobbies = false;
+
+          if (document.forms[0].elements[i].type == "checkbox") {
+            let msg = document.forms[0].elements[i].name;
+            const numbOfElems = document.getElementsByName(msg).length;
+            let currentElement = document.getElementsByName(msg);
+            for (let j = 0; j < numbOfElems; j++) {
+              if (currentElement[j].checked == true) {
+                checkBoxHobbies = true;
+              }
+            }
+            if (checkBoxHobbies == false) {
+              e.preventDefault();
+
+              p.innerHTML =
+                "* Please check one or more " +
+                document.forms[0].elements[i].name;
+
+              insertAfter(p, document.forms[0].elements[i + 2]);
+
+              break;
+            }
+          }
+          // validate show drop down selection
+          if (document.forms[0].elements[i].name == "show") {
+            if (document.forms[0].elements[i].value == "") {
+              e.preventDefault();
+
+              p.innerHTML =
+                "* Please select a " +
+                document.forms[0].elements[i].name +
+                " from drop down";
+
+              insertAfter(p, document.forms[0].elements[i]);
+              document.forms[0].elements[i].focus();
+
+              break;
+            }
+          }
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.forms[0].elements["submit"].addEventListener(
+          "click",
+          processEntries
+        );
+      });
+    </script>
+  </body>
+</html>
